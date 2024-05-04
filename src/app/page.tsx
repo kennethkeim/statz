@@ -8,9 +8,10 @@ const NUM_LONGEST_RESULTS = 3;
 const MOCK_ENABLED = false;
 const MAX_FETCH_PAGES = 5;
 
-const roundTo2 = (num: number): number => {
-  // apparently this isn't bulletproof - https://stackoverflow.com/a/12830454/8935239
-  return Math.round((num + Number.EPSILON) * 100) / 100;
+const roundTo2 = (num: number): string => {
+  // apparently this rounding isn't bulletproof - https://stackoverflow.com/a/12830454/8935239
+  const rounded = Math.round((num + Number.EPSILON) * 100) / 100;
+  return rounded.toFixed(2);
 };
 
 const metersPerSecToMinPerMile = (metersPerSec: number): string => {
@@ -78,8 +79,8 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 text-white">
       <section className="mb-8 flex justify-between">
-        <p className="text-3xl font-bold text-rose-500">{runs.length} Runs</p>
-        <p className="text-3xl font-bold text-rose-500">{milesRan} Miles</p>
+        <p className="text-3xl font-bold">{runs.length} Runs</p>
+        <p className="text-3xl font-bold">{milesRan} Miles</p>
       </section>
 
       <section className="mb-8">
