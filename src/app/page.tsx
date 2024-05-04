@@ -6,14 +6,20 @@ export default async function Home() {
 
   // Temporary quickstart to fetch data from Strava
   // const response = await fetch(
-  //   "https://www.strava.com/api/v3/athlete/activities",
+  //   "https://www.strava.com/api/v3/athlete/activities?per_page=200",
   //   {
   //     headers: {
   //       Authorization: `Bearer xxx`,
   //     },
   //   },
   // );
-  // const activities = (await response.json()) as StravaActivity[];
+  // const rawJson = (await response.json()) as unknown;
+  // if (response.status !== 200) {
+  //   console.log("Error response", rawJson);
+  //   throw new Error(`Strava API Error: ${response.status}`);
+  // }
+  // const activities = rawJson as StravaActivity[];
+  // console.log(JSON.stringify(activities));
 
   const activities = mockStravaActivities;
 
