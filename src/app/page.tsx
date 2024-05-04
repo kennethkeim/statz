@@ -4,7 +4,7 @@ import type { StravaActivity } from "./_models/strava-activities.model";
 
 const METERS_IN_MILE = 1609.344;
 const NUM_FASTEST_MILE_RESULTS = 3;
-const NUM_FASTEST_RUN_RESULTS = 5;
+const NUM_FASTEST_RUN_RESULTS = 3;
 const NUM_LONGEST_RESULTS = 3;
 const MOCK_ENABLED = false;
 const MAX_FETCH_PAGES = 5;
