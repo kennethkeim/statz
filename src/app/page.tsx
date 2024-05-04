@@ -149,14 +149,17 @@ export default async function Home() {
           subTitle="Based on avg of entire run, not based on splits"
           limit={NUM_FASTEST_MILE_RESULTS}
           activities={runsSortedBySpeed.filter(
-            (activity) => activity.distance >= METERS_IN_MILE,
+            (run) => run.distance >= METERS_IN_MILE,
           )}
         />
 
         <TableSection
-          title={`Top ${NUM_FASTEST_RUN_RESULTS} fastest runs`}
+          title={`Top ${NUM_FASTEST_RUN_RESULTS} fastest sprints`}
+          subTitle="Runs less than 1 mile"
           limit={NUM_FASTEST_RUN_RESULTS}
-          activities={runsSortedBySpeed}
+          activities={runsSortedBySpeed.filter(
+            (run) => run.distance < METERS_IN_MILE,
+          )}
         />
 
         <TableSection
