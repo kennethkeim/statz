@@ -131,40 +131,42 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 font-mono text-white">
-      <section className="mb-8 flex justify-between">
-        <p className="text-3xl font-bold">{runs.length} Runs</p>
-        <p className="text-3xl font-bold">{milesRan} Miles</p>
-      </section>
+      <div className="mx-auto max-w-xl">
+        <section className="mb-8 flex justify-between">
+          <p className="text-3xl font-bold">{runs.length} Runs</p>
+          <p className="text-3xl font-bold">{milesRan} Miles</p>
+        </section>
 
-      <TableSection
-        title={`Top ${NUM_FASTEST_MILE_RESULTS} fastest miles`}
-        subTitle="Based on avg of entire run, not based on splits"
-        limit={NUM_FASTEST_MILE_RESULTS}
-        activities={runsSortedBySpeed.filter(
-          (activity) => activity.distance >= METERS_IN_MILE,
-        )}
-      />
+        <TableSection
+          title={`Top ${NUM_FASTEST_MILE_RESULTS} fastest miles`}
+          subTitle="Based on avg of entire run, not based on splits"
+          limit={NUM_FASTEST_MILE_RESULTS}
+          activities={runsSortedBySpeed.filter(
+            (activity) => activity.distance >= METERS_IN_MILE,
+          )}
+        />
 
-      <TableSection
-        title={`Top ${NUM_FASTEST_RUN_RESULTS} fastest runs`}
-        limit={NUM_FASTEST_RUN_RESULTS}
-        activities={runsSortedBySpeed}
-      />
+        <TableSection
+          title={`Top ${NUM_FASTEST_RUN_RESULTS} fastest runs`}
+          limit={NUM_FASTEST_RUN_RESULTS}
+          activities={runsSortedBySpeed}
+        />
 
-      <TableSection
-        title={`Top ${NUM_LONGEST_RESULTS} longest runs`}
-        limit={NUM_LONGEST_RESULTS}
-        activities={runsSortedByDistance}
-      />
+        <TableSection
+          title={`Top ${NUM_LONGEST_RESULTS} longest runs`}
+          limit={NUM_LONGEST_RESULTS}
+          activities={runsSortedByDistance}
+        />
 
-      <section className="mb-10">
-        <p className="text-sm text-slate-400">
-          Earliest date recorded:{" "}
-          {formatDate(activities[activities.length - 1]?.start_date ?? "")}
-        </p>
+        <section className="mb-10">
+          <p className="text-sm text-slate-400">
+            Earliest date recorded:{" "}
+            {formatDate(activities[activities.length - 1]?.start_date ?? "")}
+          </p>
 
-        <p className="text-sm text-slate-400">Pages: {pages}</p>
-      </section>
+          <p className="text-sm text-slate-400">Pages: {pages}</p>
+        </section>
+      </div>
     </main>
   );
 }
