@@ -15,10 +15,10 @@ const roundTo2 = (num: number): string => {
 };
 
 const metersPerSecToMinPerMile = (metersPerSec: number): string => {
-  const minPerMile = 26.8224 / metersPerSec;
-  const min = Math.floor(minPerMile);
-  const sec = Math.floor((minPerMile - min) * 60);
-  return `${min}:${sec.toString().padStart(2, "0")}`;
+  const min = 26.8224 / metersPerSec;
+  const wholeMinutes = Math.floor(min);
+  const sec = Math.round((min - wholeMinutes) * 60);
+  return `${wholeMinutes}:${sec.toString().padStart(2, "0")}`;
 };
 
 const formatDate = (isoDateString: string): string => {
