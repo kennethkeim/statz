@@ -66,18 +66,18 @@ const getAllActivities = async (): Promise<[number, StravaActivity[]]> => {
 
 const ActivityListItem = ({ activity }: { activity: StravaActivity }) => {
   return (
-    <li className="mb-4">
-      <p>
+    <li className="mb-5">
+      <p className="flex justify-between text-slate-400">
         <a
           href={`https://www.strava.com/activities/${activity.id}`}
           target="_blank"
         >
           {activity.name}
         </a>
+        <span>{formatDate(activity.start_date)}</span>
       </p>
 
       <article className="flex justify-between">
-        <p>{formatDate(activity.start_date)}</p>
         <p>{roundTo2(activity.distance / METERS_IN_MILE)} miles</p>
         <p>
           {/* {activity.average_heartrate}bpm */}
@@ -101,7 +101,7 @@ const TableSection = ({
 }) => {
   return (
     <section className="mb-10">
-      <h2 className="text-xl">{title}</h2>
+      <h2 className="text-3xl">{title}</h2>
       <p className="mb-3 text-sm text-slate-400">{subTitle}</p>
 
       <ul>
@@ -138,7 +138,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 font-mono text-white">
-      <div className="mx-auto max-w-xl">
+      <div className="mx-auto max-w-lg">
         <section className="mb-8 flex justify-between">
           <p className="text-3xl font-bold">{runs.length} Runs</p>
           <p className="text-3xl font-bold">{milesRan} Miles</p>
