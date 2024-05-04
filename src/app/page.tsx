@@ -19,18 +19,23 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 text-white">
-      <h1>So. You want to see some Strava Statz.</h1>
+      <h1 className="mb-6">So. You want to see some Strava Statz.</h1>
 
+      <h2 className="mb-3">Fastest runs</h2>
       <ul>
-        {activities
-          .filter((activity) => activity.type === "Run")
+        {[...activities]
+          .sort((a, b) => b.average_speed - a.average_speed)
+          .filter(
+            (activity) =>
+              activity.type === "Run" && activity.average_speed > 2.8,
+          )
           .map((activity) => (
             <li key={activity.id} className="mb-3 flex justify-between">
-              <p>{activity.name}</p>
+              <p>{activity.start_date}</p>
               <p>
-                {activity.distance}m in {activity.moving_time}s
+                {/* {activity.distance}m in {activity.moving_time}s */}
                 {/* {activity.average_heartrate}bpm */}
-                {/* {activity.average_speed} */}
+                {activity.average_speed}
                 {/* {activity.average_speed} */}
               </p>
             </li>
