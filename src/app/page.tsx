@@ -1,9 +1,12 @@
+import { env } from "~/env";
 import { mockStravaActivities } from "./_data/strava-activities";
-// import type { StravaActivity } from "./_models/strava-activities.model";
+import type { StravaActivity } from "./_models/strava-activities.model";
 
 const METERS_IN_MILE = 1609.344;
 const NUM_FASTEST_RESULTS = 5;
 const NUM_LONGEST_RESULTS = 3;
+const MOCK_ENABLED = false;
+const MAX_FETCH_PAGES = 5;
 
 const roundTo2 = (num: number): number => {
   // apparently this isn't bulletproof - https://stackoverflow.com/a/12830454/8935239
@@ -25,27 +28,49 @@ const formatDate = (isoDateString: string): string => {
   return dateString;
 };
 
+// Temporary quickstart to fetch data from Strava
+const getActivitiesPage = async (page: number): Promise<StravaActivity[]> => {
+  const response = await fetch(
+    `https://www.strava.com/api/v3/athlete/activities?per_page=200&page=${page}`,
+    {
+      // use client secret var for access token until i implement oauth
+      headers: { Authorization: `Bearer ${env.STRAVA_CLIENT_SECRET}` },
+    },
+  );
+
+  const rawJson = (await response.json()) as unknown;
+  if (response.status !== 200) {
+    console.log("Error response", rawJson);
+    throw new Error(`Strava API Error: ${response.status}`);
+  }
+
+  return rawJson as StravaActivity[];
+};
+
+const getAllActivities = async (): Promise<[number, StravaActivity[]]> => {
+  const activities: StravaActivity[] = [];
+  let page = 1;
+  let pageActivities: StravaActivity[];
+  do {
+    console.log(`Fetching page: ${page}`);
+    pageActivities = await getActivitiesPage(page);
+    activities.push(...pageActivities);
+    page++;
+    // in while condition, page is pointing to the next page to be fetched
+  } while (pageActivities.length > 0 && page <= MAX_FETCH_PAGES);
+
+  return [page - 1, activities];
+};
+
 export default async function Home() {
-  console.log("getting data from Strava...");
-
-  // Temporary quickstart to fetch data from Strava
-  // const response = await fetch(
-  //   "https://www.strava.com/api/v3/athlete/activities?per_page=200",
-  //   {
-  //     headers: {
-  //       Authorization: `Bearer xxx`,
-  //     },
-  //   },
-  // );
-  // const rawJson = (await response.json()) as unknown;
-  // if (response.status !== 200) {
-  //   console.log("Error response", rawJson);
-  //   throw new Error(`Strava API Error: ${response.status}`);
-  // }
-  // const activities = rawJson as StravaActivity[];
+  let activities: StravaActivity[] = [];
+  let pages = 0;
+  if (MOCK_ENABLED) {
+    activities = mockStravaActivities;
+  } else {
+    [pages, activities] = await getAllActivities();
+  }
   // console.log(JSON.stringify(activities));
-
-  const activities = mockStravaActivities;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 text-white">
@@ -104,6 +129,8 @@ export default async function Home() {
           Earliest date recorded:{" "}
           {formatDate(activities?.pop()?.start_date ?? "")}
         </h2>
+
+        <h2 className="mb-3 text-sm text-slate-400">Pages: {pages}</h2>
       </section>
     </main>
   );
