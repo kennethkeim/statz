@@ -123,7 +123,7 @@ export default async function Home() {
   }
 
   // stats
-  const runs = activities.filter((activity) => activity.type === "Run");
+  const runs = activities.filter((activity) => activity.sport_type === "Run");
   const metersRan = activities.reduce((acc, cur) => acc + cur.distance, 0);
   const milesRan = Math.round(metersRan / METERS_IN_MILE);
   const runsSortedBySpeed = [...runs].sort(
