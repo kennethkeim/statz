@@ -70,10 +70,18 @@ export default async function Home() {
   } else {
     [pages, activities] = await getAllActivities();
   }
+  const runs = activities.filter((activity) => activity.type === "Run");
+  const metersRan = activities.reduce((acc, cur) => acc + cur.distance, 0);
+  const milesRan = Math.round(metersRan / METERS_IN_MILE);
   // console.log(JSON.stringify(activities));
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 text-white">
+      <section className="mb-8 flex justify-between">
+        <p className="text-3xl font-bold text-rose-500">{runs.length} Runs</p>
+        <p className="text-3xl font-bold text-rose-500">{milesRan} Miles</p>
+      </section>
+
       <section className="mb-8">
         <h2 className="text-xl">{`Top ${NUM_FASTEST_RESULTS} fastest miles`}</h2>
         <p className="mb-3 text-sm text-slate-400">
@@ -81,11 +89,8 @@ export default async function Home() {
         </p>
 
         <ul>
-          {[...activities]
-            .filter(
-              (activity) =>
-                activity.type === "Run" && activity.distance >= METERS_IN_MILE,
-            )
+          {[...runs]
+            .filter((activity) => activity.distance >= METERS_IN_MILE)
             .sort((a, b) => b.average_speed - a.average_speed)
             .slice(0, NUM_FASTEST_RESULTS)
             .map((activity) => {
@@ -108,8 +113,7 @@ export default async function Home() {
         <h2 className="mb-3 text-xl">{`Top ${NUM_LONGEST_RESULTS} longest runs`}</h2>
 
         <ul>
-          {[...activities]
-            .filter((activity) => activity.type === "Run")
+          {[...runs]
             .sort((a, b) => b.distance - a.distance)
             .slice(0, NUM_LONGEST_RESULTS)
             .map((activity) => {
@@ -125,12 +129,12 @@ export default async function Home() {
       </section>
 
       <section className="mb-8">
-        <h2 className="mb-3 text-sm text-slate-400">
+        <p className="text-sm text-slate-400">
           Earliest date recorded:{" "}
-          {formatDate(activities?.pop()?.start_date ?? "")}
-        </h2>
+          {formatDate(activities[activities.length - 1]?.start_date ?? "")}
+        </p>
 
-        <h2 className="mb-3 text-sm text-slate-400">Pages: {pages}</h2>
+        <p className="text-sm text-slate-400">Pages: {pages}</p>
       </section>
     </main>
   );
