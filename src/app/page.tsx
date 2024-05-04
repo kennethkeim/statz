@@ -77,7 +77,7 @@ export default async function Home() {
   // console.log(JSON.stringify(activities));
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 text-white">
+    <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] p-6 font-mono text-white">
       <section className="mb-8 flex justify-between">
         <p className="text-3xl font-bold">{runs.length} Runs</p>
         <p className="text-3xl font-bold">{milesRan} Miles</p>
