@@ -3,7 +3,8 @@ import { mockStravaActivities } from "./_data/strava-activities";
 import type { StravaActivity } from "./_models/strava-activities.model";
 
 const METERS_IN_MILE = 1609.344;
-const NUM_FASTEST_RESULTS = 3;
+const NUM_FASTEST_MILE_RESULTS = 3;
+const NUM_FASTEST_RUN_RESULTS = 5;
 const NUM_LONGEST_RESULTS = 3;
 const MOCK_ENABLED = false;
 const MAX_FETCH_PAGES = 5;
@@ -80,6 +81,31 @@ const ActivityListItem = ({ activity }: { activity: StravaActivity }) => {
   );
 };
 
+const TableSection = ({
+  activities,
+  limit,
+  title,
+  subTitle,
+}: {
+  activities: StravaActivity[];
+  limit: number;
+  title: string;
+  subTitle?: string;
+}) => {
+  return (
+    <section className="mb-10">
+      <h2 className="text-xl">{title}</h2>
+      <p className="mb-3 text-sm text-slate-400">{subTitle}</p>
+
+      <ul>
+        {activities.slice(0, limit).map((activity) => {
+          return <ActivityListItem activity={activity} key={activity.id} />;
+        })}
+      </ul>
+    </section>
+  );
+};
+
 export default async function Home() {
   let activities: StravaActivity[] = [];
   let pages = 0;
@@ -88,9 +114,19 @@ export default async function Home() {
   } else {
     [pages, activities] = await getAllActivities();
   }
+
+  // stats
   const runs = activities.filter((activity) => activity.type === "Run");
   const metersRan = activities.reduce((acc, cur) => acc + cur.distance, 0);
   const milesRan = Math.round(metersRan / METERS_IN_MILE);
+  const runsSortedBySpeed = [...runs].sort(
+    (a, b) => b.average_speed - a.average_speed,
+  );
+  const runsSortedByDistance = [...runs].sort(
+    (a, b) => b.distance - a.distance,
+  );
+
+  // For saving mock data
   // console.log(JSON.stringify(activities));
 
   return (
@@ -100,37 +136,28 @@ export default async function Home() {
         <p className="text-3xl font-bold">{milesRan} Miles</p>
       </section>
 
-      <section className="mb-8">
-        <h2 className="text-xl">{`Top ${NUM_FASTEST_RESULTS} fastest miles`}</h2>
-        <p className="mb-3 text-sm text-slate-400">
-          Based on avg of entire run, not based on splits
-        </p>
+      <TableSection
+        title={`Top ${NUM_FASTEST_MILE_RESULTS} fastest miles`}
+        subTitle="Based on avg of entire run, not based on splits"
+        limit={NUM_FASTEST_MILE_RESULTS}
+        activities={runsSortedBySpeed.filter(
+          (activity) => activity.distance >= METERS_IN_MILE,
+        )}
+      />
 
-        <ul>
-          {[...runs]
-            .filter((activity) => activity.distance >= METERS_IN_MILE)
-            .sort((a, b) => b.average_speed - a.average_speed)
-            .slice(0, NUM_FASTEST_RESULTS)
-            .map((activity) => {
-              return <ActivityListItem activity={activity} key={activity.id} />;
-            })}
-        </ul>
-      </section>
+      <TableSection
+        title={`Top ${NUM_FASTEST_RUN_RESULTS} fastest runs`}
+        limit={NUM_FASTEST_RUN_RESULTS}
+        activities={runsSortedBySpeed}
+      />
 
-      <section className="mb-8">
-        <h2 className="mb-3 text-xl">{`Top ${NUM_LONGEST_RESULTS} longest runs`}</h2>
+      <TableSection
+        title={`Top ${NUM_LONGEST_RESULTS} longest runs`}
+        limit={NUM_LONGEST_RESULTS}
+        activities={runsSortedByDistance}
+      />
 
-        <ul>
-          {[...runs]
-            .sort((a, b) => b.distance - a.distance)
-            .slice(0, NUM_LONGEST_RESULTS)
-            .map((activity) => {
-              return <ActivityListItem activity={activity} key={activity.id} />;
-            })}
-        </ul>
-      </section>
-
-      <section className="mb-8">
+      <section className="mb-10">
         <p className="text-sm text-slate-400">
           Earliest date recorded:{" "}
           {formatDate(activities[activities.length - 1]?.start_date ?? "")}
