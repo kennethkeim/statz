@@ -67,7 +67,14 @@ const getAllActivities = async (): Promise<[number, StravaActivity[]]> => {
 const ActivityListItem = ({ activity }: { activity: StravaActivity }) => {
   return (
     <li className="mb-4">
-      <p>{activity.name}</p>
+      <p>
+        <a
+          href={`https://www.strava.com/activities/${activity.id}`}
+          target="_blank"
+        >
+          {activity.name}
+        </a>
+      </p>
 
       <article className="flex justify-between">
         <p>{formatDate(activity.start_date)}</p>
