@@ -3,7 +3,7 @@ import { mockStravaActivities } from "./_data/strava-activities";
 import type { StravaActivity } from "./_models/strava-activities.model";
 
 const METERS_IN_MILE = 1609.344;
-const NUM_FASTEST_RESULTS = 5;
+const NUM_FASTEST_RESULTS = 3;
 const NUM_LONGEST_RESULTS = 3;
 const MOCK_ENABLED = false;
 const MAX_FETCH_PAGES = 5;
@@ -63,6 +63,23 @@ const getAllActivities = async (): Promise<[number, StravaActivity[]]> => {
   return [page - 1, activities];
 };
 
+const ActivityListItem = ({ activity }: { activity: StravaActivity }) => {
+  return (
+    <li className="mb-4">
+      <p>{activity.name}</p>
+
+      <article className="flex justify-between">
+        <p>{formatDate(activity.start_date)}</p>
+        <p>{roundTo2(activity.distance / METERS_IN_MILE)} miles</p>
+        <p>
+          {/* {activity.average_heartrate}bpm */}
+          {metersPerSecToMinPerMile(activity.average_speed)}
+        </p>
+      </article>
+    </li>
+  );
+};
+
 export default async function Home() {
   let activities: StravaActivity[] = [];
   let pages = 0;
@@ -95,17 +112,7 @@ export default async function Home() {
             .sort((a, b) => b.average_speed - a.average_speed)
             .slice(0, NUM_FASTEST_RESULTS)
             .map((activity) => {
-              return (
-                <li key={activity.id} className="mb-3 flex justify-between">
-                  <p>{formatDate(activity.start_date)}</p>
-                  <p>{roundTo2(activity.distance / METERS_IN_MILE)} miles</p>
-                  <p>
-                    {/* {activity.distance}m in {activity.moving_time}s */}
-                    {/* {activity.average_heartrate}bpm */}
-                    {metersPerSecToMinPerMile(activity.average_speed)}
-                  </p>
-                </li>
-              );
+              return <ActivityListItem activity={activity} key={activity.id} />;
             })}
         </ul>
       </section>
@@ -118,13 +125,7 @@ export default async function Home() {
             .sort((a, b) => b.distance - a.distance)
             .slice(0, NUM_LONGEST_RESULTS)
             .map((activity) => {
-              return (
-                <li key={activity.id} className="mb-3 flex justify-between">
-                  <p>{formatDate(activity.start_date)}</p>
-                  <p>{roundTo2(activity.distance / METERS_IN_MILE)} miles</p>
-                  <p>{metersPerSecToMinPerMile(activity.average_speed)}</p>
-                </li>
-              );
+              return <ActivityListItem activity={activity} key={activity.id} />;
             })}
         </ul>
       </section>
