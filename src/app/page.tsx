@@ -8,10 +8,7 @@ import {
 } from "./_utils/activity.utils";
 
 const METERS_IN_MILE = 1609.344;
-const NUM_FASTEST_MILE_RESULTS = 3;
-const NUM_FASTEST_RUN_RESULTS = 3;
-const NUM_LONGEST_RESULTS = 3;
-const MOCK_ENABLED = true;
+const MOCK_ENABLED = false;
 
 const ActivityListItem = ({ activity }: { activity: StravaActivity }) => {
   return (
@@ -61,7 +58,7 @@ const TableSection = ({
   return (
     <Section>
       <h2 className="text-xl">{title}</h2>
-      <p className="mb-3 text-sm text-slate-400">{subTitle}</p>
+      <p className="mb-3 text-xs text-slate-400">{subTitle}</p>
 
       <ul>
         {activities.slice(0, limit).map((activity) => {
@@ -91,6 +88,10 @@ export default async function Home() {
   const runsSortedByDistance = [...runs].sort(
     (a, b) => b.distance - a.distance,
   );
+  const runsSortedByDate = [...runs].sort(
+    (a, b) =>
+      new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
+  );
 
   // For saving mock data
   // console.log(JSON.stringify(activities));
@@ -104,31 +105,37 @@ export default async function Home() {
         </section>
 
         <TableSection
-          title={`Top ${NUM_FASTEST_MILE_RESULTS} fastest miles`}
-          subTitle="Based on avg of entire run, not based on splits"
-          limit={NUM_FASTEST_MILE_RESULTS}
+          title={`Fastest miles`}
+          subTitle="Avg of entire run - no splits"
+          limit={3}
           activities={runsSortedBySpeed.filter(
             (run) => run.distance >= METERS_IN_MILE,
           )}
         />
 
         <TableSection
-          title={`Top ${NUM_FASTEST_RUN_RESULTS} fastest sprints`}
+          title={`Fastest sprints`}
           subTitle="Runs less than 1 mile"
-          limit={NUM_FASTEST_RUN_RESULTS}
+          limit={3}
           activities={runsSortedBySpeed.filter(
             (run) => run.distance < METERS_IN_MILE,
           )}
         />
 
         <TableSection
-          title={`Top ${NUM_LONGEST_RESULTS} longest runs`}
-          limit={NUM_LONGEST_RESULTS}
+          title={`Longest runs`}
+          limit={2}
           activities={runsSortedByDistance}
         />
 
+        <TableSection
+          title={`Recent runs`}
+          limit={3}
+          activities={runsSortedByDate}
+        />
+
         <Section>
-          <p className="text-sm text-slate-400">
+          <p className="text-xs text-slate-400">
             Earliest date recorded:{" "}
             {formatDate(activities[activities.length - 1]?.start_date ?? "")}
           </p>
