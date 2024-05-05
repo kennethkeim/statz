@@ -52,4 +52,7 @@ export interface StravaActivity {
   pr_count: number;
   total_photo_count: number;
   has_kudoed: boolean;
+  average_watts?: number;
+  kilojoules?: number;
+  device_watts?: boolean;
 }

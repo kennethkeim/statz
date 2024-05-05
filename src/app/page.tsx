@@ -11,7 +11,7 @@ const METERS_IN_MILE = 1609.344;
 const NUM_FASTEST_MILE_RESULTS = 3;
 const NUM_FASTEST_RUN_RESULTS = 3;
 const NUM_LONGEST_RESULTS = 3;
-const MOCK_ENABLED = false;
+const MOCK_ENABLED = true;
 
 const ActivityListItem = ({ activity }: { activity: StravaActivity }) => {
   return (
